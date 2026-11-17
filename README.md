@@ -1,1 +1,1 @@
-# -medtech-daily6
+# medtech-daily6
