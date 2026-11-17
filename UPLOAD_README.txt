@@ -1,0 +1,1 @@
+GitHub Pages upload pack. Upload all files in this folder to repository root. Then Settings > Pages > Deploy from a branch > main / root.
