@@ -1,25 +1,19 @@
-醫檢師 Daily 6｜題庫瀏覽補丁 v1.3
+醫檢師 Daily 6｜快取更新修正 v1.3.1
 
-新增功能：
-- 首頁新增「題庫瀏覽／指定題目」
-- 可依考次、科目、題號直接找題
-- 可用關鍵字搜尋
-- 可只看需要原題圖／原始排版的題目
-- 指定題若屬題組，會從題組第一題開始整組作答，不拆題組
-- 題庫瀏覽搜尋完整 5,760 題，不受 Daily 6 日常抽題設定影響
-- 指定作答仍會記入作答紀錄與題庫覆蓋率
-- PWA 快取更新至 v6
-
-已驗證：
-- 題庫總數 5,760 題
-- 110-1 生理病理第1題不顯示原題圖
-- 110-1 生理病理第5、7、8題保留原題圖
-- JavaScript 語法檢查通過
+修正：
+- 保留「題庫瀏覽／指定題目」功能。
+- 修正 GitHub 已更新但 iPhone/iPad 仍顯示舊首頁的問題。
+- 首頁 HTML 改成 network-first，優先抓最新版本。
+- 新 Service Worker 接管後會自動重新整理一次。
+- 首頁新增「版本 v1.3.1」小標示，方便確認是否真的更新成功。
+- Service Worker 快取版本升至 v7。
 
 更新方式：
-1. 進 GitHub medtech-daily6 repository。
-2. Add file → Upload files。
-3. 上傳本資料夾中的 index.html 與 sw.js，覆蓋同名檔案。
-4. Commit changes。
-5. 等 GitHub Pages 重新部署。
-6. Safari 重新整理；若已加入主畫面，完全關閉後再重開。
+1. GitHub → medtech-daily6 → Add file → Upload files
+2. 上傳 index.html 與 sw.js，覆蓋同名檔案
+3. Commit changes
+4. 等 GitHub Pages 重新部署
+5. Safari 開：
+   https://jses4527-jpg.github.io/medtech-daily6/?v=131
+   這個帶 ?v=131 的網址可以繞過舊首頁快取，適合第一次驗證新版。
+6. 看到「版本 v1.3.1」以及「題庫瀏覽／指定題目」後，就代表更新成功。

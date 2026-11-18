@@ -44,7 +44,7 @@ h1{font-size:1.35rem;margin:0}.pill{background:var(--soft);color:#3730a3;border-
 </head>
 <body>
 <div class="wrap">
-  <div class="header"><h1>醫檢師 Daily 6</h1><div class="pill">110～115 年完整題庫</div></div>
+  <div class="header"><h1>醫檢師 Daily 6</h1><div class="pill">110～115 年完整題庫</div></div><div class="small" style="margin:-4px 0 10px;color:#9ca3af">版本 v1.3.1</div>
   <div class="badges"><span class="badge">5,760 題</span><span class="badge">六科各 960 題</span><span class="badge">24 組承上題題組</span><span class="badge">含原題圖頁</span><span class="badge">官方更正答案支援</span></div>
 
   <section class="card" id="home"><div style="padding:10px 12px;margin:0 0 14px;border-radius:12px;background:#eef2ff;line-height:1.65">📱 <b>手機 PWA 版</b>：圖片題完整保留，刷到該考次的圖片題時才載入對應圖片包。Safari 可「分享 → 加入主畫面」。</div>
@@ -217,6 +217,12 @@ document.addEventListener('click',e=>{
  if(e.target.classList&&e.target.classList.contains('exam-page')){const b=document.getElementById('imgLightbox');b.querySelector('img').src=e.target.src;b.classList.add('open');}
  if(e.target.id==='imgLightbox'||(e.target.classList&&e.target.classList.contains('close'))){document.getElementById('imgLightbox').classList.remove('open');}
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+if('serviceWorker' in navigator){
+  let swReloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!swReloading){swReloading=true;location.reload();}
+  });
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
 </script>
 </body></html>
