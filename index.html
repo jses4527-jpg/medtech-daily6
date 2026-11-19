@@ -40,16 +40,34 @@ h1{font-size:1.35rem;margin:0}.pill{background:var(--soft);color:#3730a3;border-
 #imgLightbox.open{display:flex}
 #imgLightbox img{max-width:100%;max-height:95vh;object-fit:contain}
 #imgLightbox .close{position:absolute;top:14px;right:16px;background:#fff;border:0;border-radius:999px;width:40px;height:40px;font-size:22px}
+
+.crop-note{font-size:.84rem;color:#6b7280;margin:6px 0}.visual-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.original-pages.hidden{display:none}.crop-image{background:#fff}
+
+.group-quiz-head{border:1px solid #fde68a;background:#fffbeb;color:#92400e;border-radius:14px;padding:12px 14px;margin:10px 0 16px;line-height:1.6}
+.group-question-block{border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0;background:#fff}
+.group-question-block.answered{background:#fcfcfd}
+.group-question-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.group-question-title b{font-size:1rem}
+.group-question-block .question{margin-top:10px}
+.group-conf{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 12px}
+.group-conf button{border:1px solid var(--line);background:white;border-radius:999px;padding:9px 12px;cursor:pointer}
+.group-conf button.active{border-color:var(--accent);background:var(--soft);color:#3730a3;font-weight:700}
+.group-conf button:disabled{opacity:.7;cursor:default}
+.group-visual-reuse{font-size:.88rem;color:#6b7280;padding:8px 10px;border-left:3px solid #c7d2fe;background:#f8fafc;border-radius:8px;margin:8px 0}
+.group-result{margin-top:12px;padding:12px;border-radius:10px;line-height:1.6}
+.group-result.good{background:#ecfdf5;color:var(--good)}
+.group-result.bad{background:#fef2f2;color:var(--bad)}
+.group-submit-note{font-size:.88rem;color:#6b7280;margin-top:8px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="header"><h1>醫檢師 Daily 6</h1><div class="pill">110～115 年完整題庫</div></div><div class="small" style="margin:-4px 0 10px;color:#9ca3af">版本 v1.4</div>
-  <div class="badges"><span class="badge">5,760 題</span><span class="badge">六科各 960 題</span><span class="badge">24 組承上題題組</span><span class="badge">含原題圖頁</span><span class="badge">官方更正答案支援</span></div>
+  <div class="header"><h1>醫檢師 Daily 6</h1><div class="pill">110～115 年完整題庫</div></div><div class="small" style="margin:-4px 0 10px;color:#9ca3af">版本 v1.6</div>
+  <div class="badges"><span class="badge">5,760 題</span><span class="badge">六科各 960 題</span><span class="badge">24 組承上題題組</span><span class="badge">圖片題精準裁切</span><span class="badge">題組同頁作答</span><span class="badge">官方更正答案支援</span></div>
 
-  <section class="card" id="home"><div style="padding:10px 12px;margin:0 0 14px;border-radius:12px;background:#eef2ff;line-height:1.65">📱 <b>手機 PWA 版</b>：圖片題完整保留，刷到該考次的圖片題時才載入對應圖片包。Safari 可「分享 → 加入主畫面」。</div>
+  <section class="card" id="home"><div style="padding:10px 12px;margin:0 0 14px;border-radius:12px;background:#eef2ff;line-height:1.65">📱 <b>手機 PWA 版</b>：圖片題會優先顯示該題的圖／表格；題組會同頁作答、共用圖不重複顯示，並保留「查看原始整頁」供核對。Safari 可「分享 → 加入主畫面」。</div>
     <h2>Daily 6</h2>
-    <p>每次六科各抽 1 個「抽題單位」。普通題＝1 題；抽到題組時會把整個題組一起出，因此實際題數可能超過 6 題。<b>尚未刷過的題目優先</b>，讓題庫真的一題一題被走完。</p>
+    <p>每次六科各抽 1 個「抽題單位」。普通題＝1 題；抽到題組時會把整組放在同一頁一起作答，因此實際題數可能超過 6 題。<b>尚未刷過的題目優先</b>，讓題庫真的一題一題被走完。</p>
     <div class="warning">預設日常題池包含 110-1～113-2、114-2、115-2；<b>114-1（你的前測）與 115-1（預留後測）已放進完整資料庫，但預設不抽。</b>可在「題庫設定」自行開關。</div>
     <div id="historySummary"></div>
     <div id="coverageSummary"></div>
@@ -67,14 +85,22 @@ h1{font-size:1.35rem;margin:0}.pill{background:var(--soft);color:#3730a3;border-
   <section class="card hidden" id="quizCard">
     <div class="toprow"><div id="stepLabel" class="muted"></div><div class="timer" id="timer">00:00</div></div>
     <div class="progress"><div class="bar" id="bar"></div></div>
-    <div class="qmeta"><span class="tag" id="subjectTag"></span><span class="tag" id="topicTag"></span><span class="tag" id="sourceTag"></span><span class="tag group hidden" id="groupTag"></span><span class="tag corrected hidden" id="correctedTag">官方更正答案</span></div>
-    <div class="question" id="question"></div>
-    <div id="visualContainer"></div>
-    <div id="options"></div>
-    <div class="conf-title">這題你的感覺？</div>
-    <div class="conf"><button data-c="會">🟢 會</button><button data-c="猜">🟡 猜</button><button data-c="完全不懂">🔴 完全不懂</button></div>
-    <div class="result" id="result"></div>
-    <div class="actions"><button class="main" id="submitBtn">送出答案</button><button class="main hidden" id="nextBtn">下一題 →</button></div>
+    <div id="singleQuizBody">
+      <div class="qmeta"><span class="tag" id="subjectTag"></span><span class="tag" id="topicTag"></span><span class="tag" id="sourceTag"></span><span class="tag group hidden" id="groupTag"></span><span class="tag corrected hidden" id="correctedTag">官方更正答案</span></div>
+      <div class="question" id="question"></div>
+      <div id="visualContainer"></div>
+      <div id="options"></div>
+      <div class="conf-title">這題你的感覺？</div>
+      <div class="conf"><button data-c="會">🟢 會</button><button data-c="猜">🟡 猜</button><button data-c="完全不懂">🔴 完全不懂</button></div>
+      <div class="result" id="result"></div>
+      <div class="actions"><button class="main" id="submitBtn">送出答案</button><button class="main hidden" id="nextBtn">下一題 →</button></div>
+    </div>
+    <div id="groupQuizBody" class="hidden">
+      <div class="group-quiz-head" id="groupQuizHead"></div>
+      <div id="groupItems"></div>
+      <div class="group-submit-note">題組內每一題都要選答案並標記 🟢會／🟡猜／🔴完全不懂，送出後才會一起揭曉答案。</div>
+      <div class="actions"><button class="main" id="groupSubmitBtn">送出整個題組</button><button class="main hidden" id="groupNextBtn">下一個抽題單位 →</button></div>
+    </div>
   </section>
 
   <section class="card summary hidden" id="summary">
@@ -137,6 +163,46 @@ function ensureImageBundle(year){
     document.head.appendChild(sc);
   });
 }
+window.CROP_IMAGES=window.CROP_IMAGES||{};
+window.CROP_KINDS=window.CROP_KINDS||{};
+window.CROP_INHERIT=window.CROP_INHERIT||{};
+const CROP_BUNDLE_LOADED=new Set();
+function ensureCropBundle(year){
+  if(CROP_BUNDLE_LOADED.has(year))return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const sc=document.createElement('script');
+    sc.src=`./crops-${year}.js`;
+    sc.onload=()=>{CROP_BUNDLE_LOADED.add(year);resolve()};
+    sc.onerror=()=>reject(new Error('裁切圖片包載入失敗'));
+    document.head.appendChild(sc);
+  });
+}
+function cropSourceId(qid){
+  const seen=new Set();let x=qid;
+  while(window.CROP_INHERIT[x]&&!seen.has(x)){seen.add(x);x=window.CROP_INHERIT[x]}
+  return x;
+}
+function cropTitleFor(kinds){
+  if((kinds||[]).some(k=>k==='original-region'))return '📎 原題補充（特殊排版），可點圖放大';
+  if((kinds||[]).some(k=>k==='formula'))return '🔎 公式／符號原始排版，可點圖放大';
+  return '🖼️ 此題圖片，可點圖放大';
+}
+function toggleOriginalPages(btn,qid){
+  const q=byId.get(qid);if(!q)return;
+  const box=btn.parentElement.nextElementSibling;
+  if(!box)return;
+  if(box.dataset.loaded==='1'){
+    box.classList.toggle('hidden');
+    btn.textContent=box.classList.contains('hidden')?'📄 查看原始整頁':'收起原始整頁';
+    return;
+  }
+  btn.disabled=true;btn.textContent='原始整頁載入中…';
+  ensureImageBundle(q.year).then(()=>{
+    const vkeys=safeVisualKeys(q);
+    box.innerHTML=vkeys.map(k=>PAGE_IMAGES[k]?`<img class="exam-page" src="${PAGE_IMAGES[k]}" alt="原始考卷頁">`:``).join('')||'<div class="crop-note">找不到原始整頁。</div>';
+    box.dataset.loaded='1';box.classList.remove('hidden');btn.disabled=false;btn.textContent='收起原始整頁';
+  }).catch(()=>{btn.disabled=false;btn.textContent='📄 查看原始整頁';box.innerHTML='<div class="crop-note">⚠️ 原始整頁載入失敗。</div>';box.classList.remove('hidden')});
+}
 const SUBJECTS=["生化","分生鏡檢","微生物","血清免疫","血液血庫","生理病理"];
 const LETTERS=["A","B","C","D"];
 const EXAMS=["110-1","110-2","111-1","111-2","112-1","112-2","113-1","113-2","114-1","114-2","115-1","115-2"];
@@ -147,7 +213,7 @@ const SESSION='medtech_daily6_current_v10';
 let history=safeJSON(localStorage.getItem(STORE),[]);
 let settings=safeJSON(localStorage.getItem(SETTINGS),{enabledExams:DEFAULT_EXAMS});
 if(!Array.isArray(settings.enabledExams))settings={enabledExams:[...DEFAULT_EXAMS]};
-let current=null,idx=0,conf=null,timerHandle=null,calCursor=new Date();
+let current=null,idx=0,conf=null,timerHandle=null,calCursor=new Date(),groupConfs={},activeGroupKey=null;
 const byId=new Map(QUESTIONS.map(q=>[q.id,q]));
 const bySubject=Object.fromEntries(SUBJECTS.map(s=>[s,QUESTIONS.filter(q=>q.subject===s)]));
 function safeJSON(s,fallback){try{return s?JSON.parse(s):fallback}catch{return fallback}}
@@ -167,23 +233,98 @@ function activeQuestions(){const enabled=new Set(settings.enabledExams);return Q
 function statsById(){const m=new Map();for(const a of history.flatMap(s=>s.answers||[])){let z=m.get(a.questionId)||{n:0,wrong:0,guess:0,red:0};z.n++;if(!a.correct)z.wrong++;if(a.confidence==='猜')z.guess++;if(a.confidence==='完全不懂')z.red++;m.set(a.questionId,z)}return m}
 function groupUnits(subject){const enabled=new Set(settings.enabledExams);const qs=bySubject[subject].filter(q=>enabled.has(q.year));const units=[],seenG=new Set();for(const q of qs){if(q.groupId){if(seenG.has(q.groupId))continue;seenG.add(q.groupId);units.push(qs.filter(x=>x.groupId===q.groupId))}else units.push([q])}return units}
 function chooseUnit(subject){const units=groupUnits(subject);if(!units.length)throw new Error(`${subject} 沒有可抽題目，請檢查題庫設定`);const seen=answeredIds();const unseen=units.filter(u=>u.some(q=>!seen.has(q.id)));if(unseen.length)return randomOne(unseen);const st=statsById();const weighted=[];for(const u of units){let score=1;for(const q of u){const x=st.get(q.id)||{n:0,wrong:0,guess:0,red:0};score+=x.wrong*4+x.red*3+x.guess*1.5+1/(x.n+1)}const copies=Math.max(1,Math.min(30,Math.round(score)));for(let i=0;i<copies;i++)weighted.push(u)}return randomOne(weighted)}
-function beginSession(){let qs=[];try{for(const s of SUBJECTS)qs.push(...chooseUnit(s))}catch(e){alert(e.message);return}current={id:Date.now(),start:Date.now(),end:null,questions:qs,answers:[]};idx=0;conf=null;localStorage.setItem(SESSION,JSON.stringify(current));show('quizCard');startTimer();renderQ()}
+function beginSession(){let qs=[];try{for(const s of SUBJECTS)qs.push(...chooseUnit(s))}catch(e){alert(e.message);return}current={id:Date.now(),start:Date.now(),end:null,questions:qs,answers:[]};idx=0;conf=null;groupConfs={};activeGroupKey=null;localStorage.setItem(SESSION,JSON.stringify(current));show('quizCard');startTimer();renderQ()}
 function startTimer(){clearInterval(timerHandle);const tick=()=>{if(current&&!current.end)document.getElementById('timer').textContent=fmt((Date.now()-current.start)/1000)};tick();timerHandle=setInterval(tick,250)}
-function renderQ(){const q=current.questions[idx],rec=current.answers[idx];document.getElementById('stepLabel').textContent=`第 ${idx+1} / ${current.questions.length} 題`;document.getElementById('bar').style.width=`${idx/current.questions.length*100}%`;document.getElementById('subjectTag').textContent=q.subject;document.getElementById('topicTag').textContent=q.topic;document.getElementById('sourceTag').textContent=`${q.year} 第 ${q.n} 題`;
+function currentUnit(){
+ const q=current?.questions?.[idx];if(!q)return null;
+ if(!q.groupId)return {start:idx,end:idx,questions:[q],key:q.id};
+ let start=idx,end=idx;
+ while(start>0&&current.questions[start-1]?.groupId===q.groupId)start--;
+ while(end+1<current.questions.length&&current.questions[end+1]?.groupId===q.groupId)end++;
+ return {start,end,questions:current.questions.slice(start,end+1),key:q.groupId};
+}
+async function renderGroupVisuals(unit){
+ const seen=new Set();
+ for(let j=0;j<unit.questions.length;j++){
+  const q=unit.questions[j],globalIndex=unit.start+j,vc=document.getElementById(`groupVisual_${globalIndex}`);if(!vc)continue;
+  const vkeys=safeVisualKeys(q);if(!vkeys.length){vc.innerHTML='';continue}
+  vc.innerHTML='<div class="visual-wrap"><div class="visual-title">🖼️ 題目圖片載入中…</div></div>';
+  try{
+   await ensureCropBundle(q.year);
+   const srcId=cropSourceId(q.id),crops=window.CROP_IMAGES[srcId]||[],kinds=window.CROP_KINDS[srcId]||[];
+   if(crops.length){
+    const sig='crop:'+srcId;
+    if(seen.has(sig)){vc.innerHTML='<div class="group-visual-reuse">↳ 沿用上方題組圖片／表格</div>';continue}
+    seen.add(sig);
+    vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">${cropTitleFor(kinds)}</div>${crops.map((s,i)=>`<img class="exam-page crop-image" src="${s}" alt="此題圖片 ${i+1}">`).join('')}<div class="visual-actions"><button class="tiny" onclick="toggleOriginalPages(this,'${q.id}')">📄 查看原始整頁</button></div><div class="original-pages hidden"></div></div>`;
+    continue;
+   }
+   const sig='orig:'+vkeys.join('|');
+   if(seen.has(sig)){vc.innerHTML='<div class="group-visual-reuse">↳ 沿用上方題組原始排版</div>';continue}
+   seen.add(sig);await ensureImageBundle(q.year);
+   vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">📎 此題以原始排版顯示，可點圖放大</div>${vkeys.map(k=>PAGE_IMAGES[k]?`<img class="exam-page" src="${PAGE_IMAGES[k]}" alt="原題頁面">`:``).join('')}</div>`;
+  }catch(e){
+   try{await ensureImageBundle(q.year);const sig='orig:'+vkeys.join('|');if(seen.has(sig)){vc.innerHTML='<div class="group-visual-reuse">↳ 沿用上方題組原始排版</div>';continue}seen.add(sig);vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">📎 裁切圖載入失敗，改顯示原始整頁</div>${vkeys.map(k=>PAGE_IMAGES[k]?`<img class="exam-page" src="${PAGE_IMAGES[k]}" alt="原題頁面">`:``).join('')}</div>`}catch{vc.innerHTML='<div class="visual-wrap"><div class="visual-title">⚠️ 圖片載入失敗，請確認網路後重試。</div></div>'}
+  }
+ }
+}
+function renderGroupQ(unit){
+ document.getElementById('singleQuizBody').classList.add('hidden');document.getElementById('groupQuizBody').classList.remove('hidden');
+ if(activeGroupKey!==unit.key){groupConfs={};activeGroupKey=unit.key}
+ const allAnswered=unit.questions.every((q,j)=>!!current.answers[unit.start+j]);
+ document.getElementById('stepLabel').textContent=`第 ${unit.start+1}–${unit.end+1} / ${current.questions.length} 題・題組同頁`;
+ document.getElementById('bar').style.width=`${(allAnswered?unit.end+1:unit.start)/current.questions.length*100}%`;
+ const first=unit.questions[0],last=unit.questions[unit.questions.length-1];
+ document.getElementById('groupQuizHead').innerHTML=`<b>📚 題組同頁作答</b><br>${esc(first.subject)}｜${esc(first.year)} 第 ${first.n}～${last.n} 題｜共 ${unit.questions.length} 題`;
+ const items=document.getElementById('groupItems');
+ items.innerHTML=unit.questions.map((q,j)=>{
+   const gi=unit.start+j,rec=current.answers[gi];if(rec)groupConfs[gi]=rec.confidence;
+   const corr=q.correctionNote?'<span class="tag corrected">官方更正答案</span>':'';
+   const opts=q.opts.map((o,k)=>{const text=o||`請看原題圖片中的 ${LETTERS[k]} 選項`;return `<label class="option ${o?'':'visual-placeholder'}"><input type="radio" name="groupAns_${gi}" value="${LETTERS[k]}" ${rec?.choice===LETTERS[k]?'checked':''} ${rec?'disabled':''}><b>${LETTERS[k]}.</b> ${esc(text)}</label>`}).join('');
+   const confNow=rec?.confidence||groupConfs[gi]||'';
+   const result=rec?`<div class="group-result ${rec.correct?'good':'bad'}">${rec.correct?'✅ 答對':'❌ 答錯'}<br>你的答案：<b>${esc(rec.choice)}</b>　官方答案：<b>${esc(officialAnswerText(q))}</b>${q.correctionNote?`<div class="correction-note">考選部更正／給分註記：${esc(q.correctionNote)}</div>`:''}</div>`:'';
+   return `<div class="group-question-block ${rec?'answered':''}"><div class="group-question-title"><b>第 ${q.n} 題</b><span class="tag">${esc(q.topic)}</span>${j>0?'<span class="tag group">承上題</span>':''}${corr}</div><div class="question">${esc(q.q||'（請以原題頁面作答）')}</div><div id="groupVisual_${gi}"></div><div>${opts}</div><div class="conf-title">這題你的感覺？</div><div class="group-conf" data-group-conf-row="${gi}"><button data-c="會" ${rec?'disabled':''} class="${confNow==='會'?'active':''}">🟢 會</button><button data-c="猜" ${rec?'disabled':''} class="${confNow==='猜'?'active':''}">🟡 猜</button><button data-c="完全不懂" ${rec?'disabled':''} class="${confNow==='完全不懂'?'active':''}">🔴 完全不懂</button></div>${result}</div>`;
+ }).join('');
+ document.querySelectorAll('[data-group-conf-row] button').forEach(b=>b.onclick=()=>{const row=b.closest('[data-group-conf-row]'),gi=Number(row.dataset.groupConfRow);if(current.answers[gi])return;groupConfs[gi]=b.dataset.c;row.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b))});
+ const submit=document.getElementById('groupSubmitBtn'),next=document.getElementById('groupNextBtn');submit.classList.toggle('hidden',allAnswered);next.classList.toggle('hidden',!allAnswered);next.textContent=current.end?'查看本次結果 →':'下一個抽題單位 →';
+ renderGroupVisuals(unit);
+}
+function renderQ(){const unit=currentUnit();if(unit&&unit.questions.length>1){renderGroupQ(unit);return}activeGroupKey=null;document.getElementById('singleQuizBody').classList.remove('hidden');document.getElementById('groupQuizBody').classList.add('hidden');const q=current.questions[idx],rec=current.answers[idx];document.getElementById('stepLabel').textContent=`第 ${idx+1} / ${current.questions.length} 題`;document.getElementById('bar').style.width=`${idx/current.questions.length*100}%`;document.getElementById('subjectTag').textContent=q.subject;document.getElementById('topicTag').textContent=q.topic;document.getElementById('sourceTag').textContent=`${q.year} 第 ${q.n} 題`;
  const gg=document.getElementById('groupTag');if(q.groupId){const g=current.questions.filter(x=>x.groupId===q.groupId);const gi=g.findIndex(x=>x.id===q.id);gg.textContent=`題組 ${gi+1}/${g.length}`;gg.classList.remove('hidden')}else gg.classList.add('hidden');
  document.getElementById('correctedTag').classList.toggle('hidden',!q.correctionNote);document.getElementById('question').textContent=q.q||'（請以原題頁面作答）';
  const vc=document.getElementById('visualContainer');const vkeys=safeVisualKeys(q);if(vkeys.length){
-  vc.innerHTML='<div class="visual-wrap"><div class="visual-title">📎 原題圖片載入中…</div></div>';
-  ensureImageBundle(q.year).then(()=>{
+  vc.innerHTML='<div class="visual-wrap"><div class="visual-title">🖼️ 題目圖片載入中…</div></div>';
+  ensureCropBundle(q.year).then(()=>{
     if(!current||current.questions[idx]?.id!==q.id)return;
-    vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">📎 此題含圖／原始排版，可點圖放大</div>${vkeys.map(k=>PAGE_IMAGES[k]?`<img class="exam-page" src="${PAGE_IMAGES[k]}" alt="原題頁面">`:``).join('')}</div>`;
-  }).catch(()=>{vc.innerHTML='<div class="visual-wrap"><div class="visual-title">⚠️ 圖片載入失敗，請確認網路後重試。</div></div>'});
+    const srcId=cropSourceId(q.id),crops=window.CROP_IMAGES[srcId]||[],kinds=window.CROP_KINDS[srcId]||[];
+    if(crops.length){
+      vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">${cropTitleFor(kinds)}</div>${crops.map((s,i)=>`<img class="exam-page crop-image" src="${s}" alt="此題圖片 ${i+1}">`).join('')}<div class="visual-actions"><button class="tiny" onclick="toggleOriginalPages(this,'${q.id}')">📄 查看原始整頁</button></div><div class="original-pages hidden"></div></div>`;
+    }else{
+      ensureImageBundle(q.year).then(()=>{if(!current||current.questions[idx]?.id!==q.id)return;vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">📎 此題以原始排版顯示，可點圖放大</div>${vkeys.map(k=>PAGE_IMAGES[k]?`<img class="exam-page" src="${PAGE_IMAGES[k]}" alt="原題頁面">`:``).join('')}</div>`});
+    }
+  }).catch(()=>ensureImageBundle(q.year).then(()=>{if(!current||current.questions[idx]?.id!==q.id)return;vc.innerHTML=`<div class="visual-wrap"><div class="visual-title">📎 裁切圖載入失敗，改顯示原始整頁</div>${vkeys.map(k=>PAGE_IMAGES[k]?`<img class="exam-page" src="${PAGE_IMAGES[k]}" alt="原題頁面">`:``).join('')}</div>`}).catch(()=>{vc.innerHTML='<div class="visual-wrap"><div class="visual-title">⚠️ 圖片載入失敗，請確認網路後重試。</div></div>'}));
 }else vc.innerHTML='';
  const opts=document.getElementById('options');opts.innerHTML=q.opts.map((o,j)=>{const text=o||`請看原題圖片中的 ${LETTERS[j]} 選項`;return `<label class="option ${o?'':'visual-placeholder'}"><input type="radio" name="ans" value="${LETTERS[j]}" ${rec?.choice===LETTERS[j]?'checked':''} ${rec?'disabled':''}><b>${LETTERS[j]}.</b> ${esc(text)}</label>`}).join('');
  conf=rec?.confidence||null;document.querySelectorAll('.conf button').forEach(b=>b.classList.toggle('active',b.dataset.c===conf));const r=document.getElementById('result');if(rec){const ok=rec.correct;r.className='result '+(ok?'good':'bad');r.innerHTML=`${ok?'✅ 答對':'❌ 答錯'}<br>你的答案：<b>${esc(rec.choice)}</b>　官方答案：<b>${esc(officialAnswerText(q))}</b>${q.correctionNote?`<div class="correction-note">考選部更正／給分註記：${esc(q.correctionNote)}</div>`:''}`;document.getElementById('submitBtn').classList.add('hidden');document.getElementById('nextBtn').classList.toggle('hidden',idx>=current.questions.length-1)}else{r.className='result';r.style.display='none';document.getElementById('submitBtn').classList.remove('hidden');document.getElementById('nextBtn').classList.add('hidden')}}
 document.querySelectorAll('.conf button').forEach(b=>b.onclick=()=>{if(current?.answers[idx])return;conf=b.dataset.c;document.querySelectorAll('.conf button').forEach(x=>x.classList.toggle('active',x===b))});
 document.getElementById('submitBtn').onclick=()=>{const chosen=document.querySelector('input[name="ans"]:checked');if(!chosen)return alert('請先選一個答案');if(!conf)return alert('請標記：會／猜／完全不懂');const q=current.questions[idx],now=Date.now(),prev=idx===0?current.start:current.answers[idx-1].submittedAt;const rec={questionId:q.id,subject:q.subject,topic:q.topic,year:q.year,number:q.n,choice:chosen.value,answer:officialAnswerText(q),correct:isCorrectAnswer(q,chosen.value),confidence:conf,seconds:(now-prev)/1000,submittedAt:now};current.answers[idx]=rec;localStorage.setItem(SESSION,JSON.stringify(current));if(idx===current.questions.length-1){current.end=now;clearInterval(timerHandle);history.push({sessionId:current.id,start:current.start,end:current.end,duration:(current.end-current.start)/1000,answers:current.answers});saveHistory();localStorage.removeItem(SESSION);renderQ();setTimeout(showSummary,180)}else renderQ()};
 document.getElementById('nextBtn').onclick=()=>{idx++;conf=null;renderQ()};
+document.getElementById('groupSubmitBtn').onclick=()=>{
+ const unit=currentUnit();if(!unit||unit.questions.length<2)return;
+ const picks=[];
+ for(let j=0;j<unit.questions.length;j++){
+  const gi=unit.start+j,q=unit.questions[j],chosen=document.querySelector(`input[name="groupAns_${gi}"]:checked`),cf=groupConfs[gi];
+  if(!chosen)return alert(`請先作答第 ${q.n} 題`);
+  if(!cf)return alert(`請標記第 ${q.n} 題：會／猜／完全不懂`);
+  picks.push({gi,q,choice:chosen.value,confidence:cf});
+ }
+ const now=Date.now(),prev=unit.start===0?current.start:(current.answers[unit.start-1]?.submittedAt||current.start),perSeconds=Math.max(0,(now-prev)/1000/unit.questions.length);
+ for(const p of picks){current.answers[p.gi]={questionId:p.q.id,subject:p.q.subject,topic:p.q.topic,year:p.q.year,number:p.q.n,choice:p.choice,answer:officialAnswerText(p.q),correct:isCorrectAnswer(p.q,p.choice),confidence:p.confidence,seconds:perSeconds,submittedAt:now}}
+ localStorage.setItem(SESSION,JSON.stringify(current));
+ if(unit.end===current.questions.length-1){current.end=now;clearInterval(timerHandle);history.push({sessionId:current.id,start:current.start,end:current.end,duration:(current.end-current.start)/1000,answers:current.answers});saveHistory();localStorage.removeItem(SESSION)}
+ renderGroupQ(unit);
+};
+document.getElementById('groupNextBtn').onclick=()=>{if(current?.end){showSummary();return}const unit=currentUnit();if(!unit)return;idx=unit.end+1;conf=null;groupConfs={};activeGroupKey=null;renderQ()};
 function showSummary(){show('summary');const a=current.answers,c=a.filter(x=>x.correct).length,d=(current.end-current.start)/1000,cs={'會':0,'猜':0,'完全不懂':0};a.forEach(x=>cs[x.confidence]++);document.getElementById('score').textContent=`${Math.round(c/a.length*100)}% (${c}/${a.length})`;document.getElementById('duration').textContent=fmt(d);document.getElementById('avgTime').textContent=fmt(d/a.length);document.getElementById('confStats').textContent=`${cs['會']} / ${cs['猜']} / ${cs['完全不懂']}`;document.getElementById('sessionReview').innerHTML='<h3>本次題目</h3><div class="scrolltable"><table><tr><th>科目</th><th>來源</th><th>考點</th><th>結果</th><th>自評</th><th>時間</th></tr>'+a.map(x=>`<tr><td>${esc(x.subject)}</td><td>${esc(x.year)}-${x.number}</td><td>${esc(x.topic)}</td><td>${x.correct?'✅':'❌'}</td><td>${esc(x.confidence)}</td><td>${fmt(x.seconds)}</td></tr>`).join('')+'</table></div>';const wrong=a.filter(x=>!x.correct),needs=a.filter(x=>!x.correct||x.confidence!=='會');document.getElementById('discussionBox').innerHTML=`<div class="discuss-preview"><b>📌 今日打卡已記錄</b><br>${localDateTime(current.start)}｜${a.length} 題｜答對 ${c} 題｜正確率 ${Math.round(c/a.length*100)}%<br><br><b>💬 跟 ChatGPT 討論</b><br>答錯 ${wrong.length} 題；需要複習 ${needs.length} 題（包含答錯、猜、完全不懂）。</div>`}
 function discussionText(session,mode='review'){if(!session)return'';const aa=(session.answers||[]).filter(x=>mode==='wrong'?!x.correct:(!x.correct||x.confidence==='猜'||x.confidence==='完全不懂'));const total=(session.answers||[]).length,correct=(session.answers||[]).filter(x=>x.correct).length;let out=`醫檢師 Daily 6 錯題討論\n日期：${localDateTime(session.start)}\n本次：${total} 題，答對 ${correct} 題，正確率 ${total?Math.round(correct/total*100):0}%\n以下是${mode==='wrong'?'答錯題':'需要複習題（答錯／猜／完全不懂）'}，請依我們原本的國考詳解方式帶我釐清：\n`;if(!aa.length)return out+'\n（本次沒有符合條件的題目）';aa.forEach((a,i)=>{const q=byId.get(a.questionId);out+=`\n【${i+1}｜${a.subject}｜${a.topic}｜${a.year} 第${a.number}題】\n`;if(q){out+=q.q+'\n';q.opts.forEach((o,j)=>out+=`${LETTERS[j]}. ${o||'[此選項為圖片，請參照原題]'}\n`);if(safeVisualKeys(q).length)out+='⚠️ 此題含原圖；若需要討論圖像細節，我可以依年份、科目與題號回查原題。\n'}out+=`我的答案：${a.choice}\n正確答案：${a.answer}\n自評：${a.confidence}\n`});return out}
 async function copyText(t){try{await navigator.clipboard.writeText(t);alert('已複製！直接貼到 ChatGPT 就可以討論。')}catch{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('已複製！')}}
@@ -198,7 +339,7 @@ function initBrowser(){const y=document.getElementById('browserYear'),sub=docume
 function showBrowser(){show('browserCard');initBrowser();renderBrowserResults()}
 function browserFilteredQuestions(){const year=document.getElementById('browserYear').value,subject=document.getElementById('browserSubject').value,num=document.getElementById('browserNumber').value.trim(),kw=document.getElementById('browserKeyword').value.trim().toLowerCase(),imagesOnly=document.getElementById('browserImagesOnly').checked;return QUESTIONS.filter(q=>(!year||q.year===year)&&(!subject||q.subject===subject)&&(!num||q.n===Number(num))&&(!imagesOnly||safeVisualKeys(q).length)&&(!kw||`${q.q} ${q.topic} ${(q.opts||[]).join(' ')}`.toLowerCase().includes(kw))).sort((a,b)=>EXAMS.indexOf(a.year)-EXAMS.indexOf(b.year)||SUBJECTS.indexOf(a.subject)-SUBJECTS.indexOf(b.subject)||a.n-b.n)}
 function renderBrowserResults(){const box=document.getElementById('browserResults'),count=document.getElementById('browserCount');if(!box)return;const all=browserFilteredQuestions(),shown=all.slice(0,120);count.textContent=`找到 ${all.length} 題${all.length>120?'（先顯示前 120 題，請再縮小條件）':''}`;if(!shown.length){box.innerHTML='<div class="browser-empty">找不到符合條件的題目。</div>';return}box.innerHTML=shown.map(q=>`<div class="browser-item"><div class="meta"><span class="tag">${q.year}</span><span class="tag">${esc(q.subject)}</span><span class="tag">第 ${q.n} 題</span><span class="tag">${esc(q.topic)}</span>${safeVisualKeys(q).length?'<span class="tag group">含原題圖</span>':''}${q.groupId?'<span class="tag group">題組</span>':''}</div><div class="qtext">${esc(q.q||'（請以原題頁面作答）')}</div><button class="tiny" data-browse-q="${q.id}">作答這題</button></div>`).join('');document.querySelectorAll('[data-browse-q]').forEach(b=>b.onclick=()=>beginSpecificQuestion(b.dataset.browseQ))}
-function beginSpecificQuestion(id){const q=byId.get(id);if(!q)return alert('找不到這題');let qs;if(q.groupId){qs=QUESTIONS.filter(x=>x.year===q.year&&x.subject===q.subject&&x.groupId===q.groupId).sort((a,b)=>a.n-b.n)}else qs=[q];current={id:Date.now(),start:Date.now(),end:null,questions:qs,answers:[],mode:'browser'};idx=0;conf=null;localStorage.setItem(SESSION,JSON.stringify(current));show('quizCard');startTimer();renderQ()}
+function beginSpecificQuestion(id){const q=byId.get(id);if(!q)return alert('找不到這題');let qs;if(q.groupId){qs=QUESTIONS.filter(x=>x.year===q.year&&x.subject===q.subject&&x.groupId===q.groupId).sort((a,b)=>a.n-b.n)}else qs=[q];current={id:Date.now(),start:Date.now(),end:null,questions:qs,answers:[],mode:'browser'};idx=0;conf=null;groupConfs={};activeGroupKey=null;localStorage.setItem(SESSION,JSON.stringify(current));show('quizCard');startTimer();renderQ()}
 function resetBrowser(){document.getElementById('browserYear').value='';document.getElementById('browserSubject').value='';document.getElementById('browserNumber').value='';document.getElementById('browserKeyword').value='';document.getElementById('browserImagesOnly').checked=false;renderBrowserResults()}
 
 function showSettings(){show('settingsCard');renderSettings()}
